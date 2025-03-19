@@ -23,26 +23,48 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
 
   const annualIncome = salary * 12 + bonus;
 
-  // 年収計算後に税金等を計算
-  const healthInsurance = annualIncome * 0.09;
-  const pension = (annualIncome * 0.183) / 2;
-  const incomeTax = annualIncome * 0.05;
-  const residentTax = (annualIncome * 0.10) / 2;
-  const netIncome = annualIncome - (healthInsurance + pension + incomeTax + residentTax);
+  // 会社員の場合
+const healthInsurance = annualIncome * 0.05;
+const pension = (annualIncome * 0.183) / 2;
+const employmentInsurance = annualIncome * 0.006;
+const residentTax = annualIncome * 0.10;
 
-  const freelanceHealthInsurance = annualIncome * 0.10;
-  const freelancePension = 16980 * 12;
-  const taxableIncome = Math.max(annualIncome - freelancePension, 0);
-  let incomeTaxRate = 0.05;
-  if (taxableIncome > 1950000) {
-    incomeTaxRate = 0.1;
-  }
-  if (taxableIncome > 3300000) {
-    incomeTaxRate = 0.2;
-  }
-  const freelanceIncomeTax = (annualIncome - freelancePension) * incomeTaxRate;
-  const freelanceResidentTax = annualIncome * 0.10;
-  const freelanceNetIncome = annualIncome - (freelanceHealthInsurance + freelancePension + freelanceIncomeTax + freelanceResidentTax);
+// 所得税の計算（会社員）
+let taxableIncome = annualIncome - (healthInsurance + pension + employmentInsurance);
+let incomeTax = 0;
+
+if (taxableIncome <= 1950000) {
+  incomeTax = taxableIncome * 0.05;  // 195万円以下：5%
+} else if (taxableIncome <= 3300000) {
+  incomeTax = 1950000 * 0.05 + (taxableIncome - 1950000) * 0.1;  // 195万円超～330万円以下：10%
+} else {
+  incomeTax = 1950000 * 0.05 + (3300000 - 1950000) * 0.1 + (taxableIncome - 3300000) * 0.2;  // 330万円超：20%
+}
+
+// 会社員の手取り額
+const netIncome = annualIncome - (healthInsurance + pension + employmentInsurance + incomeTax + residentTax);
+
+
+// フリーランスの場合
+const freelanceHealthInsurance = annualIncome * 0.14;
+const freelancePension = 16980 * 12;
+const freelanceTaxableIncome = Math.max(annualIncome - freelancePension, 0);
+
+// 所得税の計算（フリーランス）
+let freelanceIncomeTax = 0;
+
+if (freelanceTaxableIncome <= 1950000) {
+  freelanceIncomeTax = freelanceTaxableIncome * 0.05;  // 195万円以下：5%
+} else if (freelanceTaxableIncome <= 3300000) {
+  freelanceIncomeTax = 1950000 * 0.05 + (freelanceTaxableIncome - 1950000) * 0.1;  // 195万円超～330万円以下：10%
+} else {
+  freelanceIncomeTax = 1950000 * 0.05 + (3300000 - 1950000) * 0.1 + (freelanceTaxableIncome - 3300000) * 0.2;  // 330万円超：20%
+}
+
+// フリーランスの手取り額
+const freelanceResidentTax = annualIncome * 0.10;
+const freelanceNetIncome = annualIncome - (freelanceHealthInsurance + freelancePension + freelanceIncomeTax + freelanceResidentTax);
+
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-none space-y-4 mt-6">
@@ -115,8 +137,8 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
       <p className="text-sm text-gray-500 mt-2">
         <strong>【フリーランス・個人事業主の場合の内訳】</strong><br />
         ・国民年金 → 一律 16,980円 / 月<br />
-        ・健康保険 → 収入の約 10%（地域による変動あり）<br />
-        ・所得税 → 累進課税 ※課税所得により約 5~20%<br />
+        ・健康保険 → 収入の約 14%（地域による）<br />
+        ・所得税 → 収入に応じて 5%〜20%<br />
         ・住民税 → 約10%
       </p>
     </div>
