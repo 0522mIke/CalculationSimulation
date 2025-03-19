@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type IncomeCalculatorProps = {
   setAnnualIncome: React.Dispatch<React.SetStateAction<number>>;
@@ -10,21 +10,20 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [isFreelancer, setIsFreelancer] = useState<boolean>(false);
 
-  const [annualIncome, setAnnualIncomeLocal] = useState<number>(0);
-
-  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSalary = Number(e.target.value);
-    setSalary(newSalary);
-    setAnnualIncome(isMonthly ? newSalary * 12 + bonus : newSalary + bonus);
+  // 年収の計算関数
+  const calculateAnnualIncome = (salary: number, bonus: number, isMonthly: boolean) => {
+    return isMonthly ? salary * 12 + bonus : salary + bonus;
   };
 
-  const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newBonus = Number(e.target.value);
-    setBonus(newBonus);
-    setAnnualIncome(isMonthly ? salary * 12 + newBonus : salary + newBonus);
-  };
+  // 年収を計算して、setAnnualIncome を呼び出し
+  useEffect(() => {
+    const calculatedAnnualIncome = calculateAnnualIncome(salary, bonus, isMonthly);
+    setAnnualIncome(calculatedAnnualIncome);  // 年収をセット
+  }, [salary, bonus, isMonthly, setAnnualIncome]);  // 必要な依存関係を追加
 
-  // 残りのロジックはそのままで
+  const annualIncome = salary * 12 + bonus;
+
+  // 年収計算後に税金等を計算
   const healthInsurance = annualIncome * 0.09;
   const pension = (annualIncome * 0.183) / 2;
   const incomeTax = annualIncome * 0.05;
@@ -54,7 +53,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
         <input
           type="number"
           value={salary}
-          onChange={handleSalaryChange}
+          onChange={(e) => setSalary(Number(e.target.value))}
           className="border p-2 w-full"
         />
       </div>
@@ -64,7 +63,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
         <input
           type="number"
           value={bonus}
-          onChange={handleBonusChange}
+          onChange={(e) => setBonus(Number(e.target.value))}
           className="border p-2 w-full"
         />
       </div>
@@ -97,7 +96,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
           <p>引かれる税金・保険料（年間合計）: <b>{(annualIncome - freelanceNetIncome).toLocaleString()} 円</b></p>
         </div>
       )}
-      
+
       <p className="text-sm text-gray-500 mt-6">
         <strong>※ 注意事項 ※</strong><br />
         このシミュレーションは個人開発のため、実際の計算と異なる場合があります。<br />
@@ -117,7 +116,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
         <strong>【フリーランス・個人事業主の場合の内訳】</strong><br />
         ・国民年金 → 一律 16,980円 / 月<br />
         ・健康保険 → 収入の約 10%（地域による変動あり）<br />
-        ・所得税 → 累進課税 ※課税所得によりざっくり 5~20%<br />
+        ・所得税 → 累進課税 ※課税所得により約 5~20%<br />
         ・住民税 → 約10%
       </p>
     </div>
