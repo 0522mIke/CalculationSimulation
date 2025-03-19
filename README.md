@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+計算シュミレーション
 
-## Getting Started
+開発背景
 
-First, run the development server:
+本ツールは数ヶ月前まで個人事業主として活動していた経験を元に、企業勤めのメリットを明確に理解するために開発されました。
+特に求職活動中に「手取り額」の計算が難しく、給与、税金、社会保険を考慮した簡単な手取り額計算ツールがあると便利だと感じました。
+フリーランスから転職を考えている方々や、新卒・主婦・学生などが「手取りいくらになるのか？」という疑問を解決できるように設計しています。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+目的
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+ポートフォリオとしてNext.jsとTypeScriptを使用して開発されたモダンなWebアプリケーションです。
+数値を入力することで即座に手取り額を計算し、実際の生活コストや収支の比較を視覚的に分かりやすく提供します。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+主な機能
 
-To learn more about Next.js, take a look at the following resources:
+- 生活コストシュミレーション
+生活費の入力を元に、必要な年収を計算。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- フリーランス & 会社員の収支
+フリーランスの手取り収入と、会社員になった場合の手取り収入を比較。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 老後の年金受給金額
+会社員とフリーランスでは年金受給額が異なります。
+それら社会保険のメリットを数値化し、可視化します。 
 
-## Deploy on Vercel
+ 
+開発技術
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+・Next.js (React + TypeScript)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+・Tailwind CSS
+
+実装フロー
+
+アイデア出し → 必要技術の選定 → 要件定義 → 画面設計とデータの受け渡し方法を整理 → フォルダ構成と計算ロジックの実装 → 必要なUIの実装とテスト → デプロイ（Vercelを使用）
+
+実際に動作するツールをご覧いただけます。
+URLはポートフォリオのプロジェクトリンクから。
+
+
+ペルソナ
+
+個人事業主やフリーランス: 転職を考える際に、企業勤めの手取りとフリーランスの手取りを比較したい人。
+主婦や学生、新卒、転職希望者: 企業の福利厚生を可視化したい人。
