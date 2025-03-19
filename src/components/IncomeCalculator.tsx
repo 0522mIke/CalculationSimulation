@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type IncomeCalculatorProps = {
   setAnnualIncome: React.Dispatch<React.SetStateAction<number>>;
@@ -12,6 +12,12 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
   const [isFreelancer, setIsFreelancer] = useState<boolean>(false);
 
   const annualIncome = isMonthly ? salary * 12 + bonus : salary + bonus;
+
+  // 年収が変わったら `setAnnualIncome` を更新
+  useEffect(() => {
+    setAnnualIncome(annualIncome);
+  }, [annualIncome, setAnnualIncome]);
+
   const healthInsurance = annualIncome * 0.09;
   const pension = (annualIncome * 0.183) / 2;
   const incomeTax = annualIncome * 0.05;
@@ -23,21 +29,20 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
   const freelancePension = 16980 * 12; 
   const taxableIncome = Math.max(annualIncome - freelancePension, 0);
   let incomeTaxRate = 0.05;
-    if (taxableIncome > 1950000) {
-      incomeTaxRate = 0.1;
-    }
-    if (taxableIncome > 3300000) {
-      incomeTaxRate = 0.2;
-    }
+  if (taxableIncome > 1950000) {
+    incomeTaxRate = 0.1;
+  }
+  if (taxableIncome > 3300000) {
+    incomeTaxRate = 0.2;
+  }
   const freelanceIncomeTax = (annualIncome - freelancePension) * incomeTaxRate;
   const freelanceResidentTax = annualIncome * 0.10;
   const freelanceNetIncome = annualIncome - (freelanceHealthInsurance + freelancePension + freelanceIncomeTax + freelanceResidentTax);
 
-
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-none space-y-4 mt-6">
       <h2 className="text-2xl font-bold text-center">手取り計算ツール</h2><br />
-  
+
       {/* 給与入力 */}
       <div className="mt-4">
         <label className="block font-medium">給与（{isMonthly ? "月収" : "年収"}）</label>
@@ -48,7 +53,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
           className="border p-2 w-full"
         />
       </div>
-  
+
       {/* ボーナス入力 */}
       <div className="mt-4">
         <label className="block font-medium">ボーナス（年間合計）</label>
@@ -59,7 +64,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
           className="border p-2 w-full"
         />
       </div>
-  
+
       {/* 月収入力切り替え */}
       <div className="flex items-center mt-4">
         <input
@@ -69,14 +74,19 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
           className="mr-2"
         />
         <label>月収入力にする</label>
-        </div>
+      </div>
 
-        {/* 会社員／フリーランスの切り替え*/}
-        <div className="flex items-center mt-4">
-    <input type="checkbox" checked={isFreelancer} onChange={() => setIsFreelancer(!isFreelancer)} className="mr-2" />
-    <label>個人事業主・フリーランスとして計算（課税所得を入力）</label>
-        </div>
-  
+      {/* 会社員／フリーランスの切り替え */}
+      <div className="flex items-center mt-4">
+        <input 
+          type="checkbox" 
+          checked={isFreelancer} 
+          onChange={() => setIsFreelancer(!isFreelancer)} 
+          className="mr-2" 
+        />
+        <label>個人事業主・フリーランスとして計算（課税所得を入力）</label>
+      </div>
+
       {/* 計算結果 */}
       <div className="mt-4 p-4 bg-gray-100 rounded">
         <p>年収: <b>{annualIncome.toLocaleString()} 円</b></p>
@@ -85,35 +95,36 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
       </div>
 
       {isFreelancer && (
-    <div className="mt-4 p-4 bg-blue-100 rounded">
-        <p>フリーランスの年収: <b>{annualIncome.toLocaleString()} 円</b></p>
-         <p>フリーランスの手取り額（月々）: <b>{Math.floor(freelanceNetIncome / 12).toLocaleString()} 円</b></p>
-        <p>引かれる税金・保険料（年間合計）: <b>{(annualIncome - freelanceNetIncome).toLocaleString()} 円</b></p>
-      </div>
+        <div className="mt-4 p-4 bg-blue-100 rounded">
+          <p>フリーランスの年収: <b>{annualIncome.toLocaleString()} 円</b></p>
+          <p>フリーランスの手取り額（月々）: <b>{Math.floor(freelanceNetIncome / 12).toLocaleString()} 円</b></p>
+          <p>引かれる税金・保険料（年間合計）: <b>{(annualIncome - freelanceNetIncome).toLocaleString()} 円</b></p>
+        </div>
       )}
+
       {/* 注釈 */}
-    <p className="text-sm text-gray-500 mt-6">
-      <strong>※ 注意事項 ※</strong><br />
-      このシミュレーションは個人開発のため、実際の計算と異なる場合があります。<br />
-      正確な金額は厚生労働省のシミュレーターなどをご確認ください。
-    </p>
+      <p className="text-sm text-gray-500 mt-6">
+        <strong>※ 注意事項 ※</strong><br />
+        このシミュレーションは個人開発のため、実際の計算と異なる場合があります。<br />
+        正確な金額は厚生労働省のシミュレーターなどをご確認ください。
+      </p>
 
-    <p className="text-sm text-gray-500 mt-2">
-      <strong>【会社員の場合の内訳】</strong><br />
-      ・厚生年金 → 収入の約 9%（労使折半後）<br />
-      ・健康保険 → 収入の約 5%（労使折半後）<br />
-      ・雇用保険 → 0.6%<br />
-      ・所得税 → 収入に応じて 5%〜20%<br />
-      ・住民税 → 約10%
-    </p>
+      <p className="text-sm text-gray-500 mt-2">
+        <strong>【会社員の場合の内訳】</strong><br />
+        ・厚生年金 → 収入の約 9%（労使折半後）<br />
+        ・健康保険 → 収入の約 5%（労使折半後）<br />
+        ・雇用保険 → 0.6%<br />
+        ・所得税 → 収入に応じて 5%〜20%<br />
+        ・住民税 → 約10%
+      </p>
 
-    <p className="text-sm text-gray-500 mt-2">
-      <strong>【フリーランス・個人事業主の場合の内訳】</strong><br />
-      ・国民年金 → 一律 16,980円 / 月<br />
-      ・健康保険 → 収入の約 10%（地域による変動あり）<br />
-      ・所得税 → 累進課税 ※課税所得によりざっくり 5~20%<br />
-      ・住民税 → 約10%
-</p>
+      <p className="text-sm text-gray-500 mt-2">
+        <strong>【フリーランス・個人事業主の場合の内訳】</strong><br />
+        ・国民年金 → 一律 16,980円 / 月<br />
+        ・健康保険 → 収入の約 10%（地域による変動あり）<br />
+        ・所得税 → 累進課税 ※課税所得によりざっくり 5~20%<br />
+        ・住民税 → 約10%
+      </p>
     </div>
   );
 }
