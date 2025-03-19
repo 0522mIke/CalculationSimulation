@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 
-export default function IncomeCalculator() {
+type IncomeCalculatorProps = {
+  setAnnualIncome: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorProps) {
   const [salary, setSalary] = useState<number>(0);
   const [bonus, setBonus] = useState<number>(0);
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
