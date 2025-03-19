@@ -18,12 +18,6 @@ const PensionCalculator = () => {
   // 3. フリーランス40年分の年金支払い総額
   const totalFreelancePensionFor40Years = Math.floor(freelanceMonthlyPension * 12 * 40);
 
-  // 年金受給額の概算（年収ごとに計算）
- const PensionCalculator = () => {
-  const pension350 = getEmployeeMonthlyPension(3500000);
-  const pension450 = getEmployeeMonthlyPension(4500000);
-  const pension550 = getEmployeeMonthlyPension(5500000);
-  const pension600 = getEmployeeMonthlyPension(6000000);
 
   // 会社員の年金受給額（例：年収360万円の場合）
   // const estimatedEmployeeMonthlyPension = getEmployeeMonthlyPension(employeeAnnualIncome);
@@ -49,12 +43,12 @@ const PensionCalculator = () => {
               
       <br></br>
        <h3>年収別会社員の年金受給額（月平均）</h3>
-          <ul>
-        <li>年収350万円の場合: ¥{pension350}</li>
-        <li>年収450万円の場合: ¥{pension450}</li>
-        <li>年収550万円の場合: ¥{pension550}</li>
-        <li>年収600万円の場合: ¥{pension600}</li>
-        </ul>
+      <ul>
+        <li>年収350万円の場合: ¥130,000</li>
+        <li>年収450万円の場合: ¥147,000</li>
+        <li>年収550万円の場合: ¥165,000</li>
+        <li>年収600万円の場合: ¥180,000</li>
+      </ul>
       <br></br>
       <h3>フリーランスの国民年金受給額（月平均）: ¥{estimatedFreelanceMonthlyPension.toLocaleString()}</h3>
       <br />
