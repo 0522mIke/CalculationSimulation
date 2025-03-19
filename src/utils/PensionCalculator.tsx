@@ -27,7 +27,7 @@ const PensionCalculator = () => {
   };
 
   // 会社員の年金受給額（例：年収360万円の場合）
-  const estimatedEmployeeMonthlyPension = getEmployeeMonthlyPension(employeeAnnualIncome);
+  // const estimatedEmployeeMonthlyPension = getEmployeeMonthlyPension(employeeAnnualIncome);
   
   // フリーランスの年金受給額（一定金額）
   const estimatedFreelanceMonthlyPension = 68000;
