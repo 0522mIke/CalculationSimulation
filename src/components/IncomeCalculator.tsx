@@ -1,5 +1,4 @@
-"use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type IncomeCalculatorProps = {
   setAnnualIncome: React.Dispatch<React.SetStateAction<number>>;
@@ -11,22 +10,29 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [isFreelancer, setIsFreelancer] = useState<boolean>(false);
 
-  const annualIncome = isMonthly ? salary * 12 + bonus : salary + bonus;
+  const [annualIncome, setAnnualIncomeLocal] = useState<number>(0);
 
-  // 年収が変わったら `setAnnualIncome` を更新
-  useEffect(() => {
-    setAnnualIncome(annualIncome);
-  }, [annualIncome, setAnnualIncome]);
+  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSalary = Number(e.target.value);
+    setSalary(newSalary);
+    setAnnualIncome(isMonthly ? newSalary * 12 + bonus : newSalary + bonus);
+  };
 
+  const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newBonus = Number(e.target.value);
+    setBonus(newBonus);
+    setAnnualIncome(isMonthly ? salary * 12 + newBonus : salary + newBonus);
+  };
+
+  // 残りのロジックはそのままで
   const healthInsurance = annualIncome * 0.09;
   const pension = (annualIncome * 0.183) / 2;
   const incomeTax = annualIncome * 0.05;
   const residentTax = (annualIncome * 0.10) / 2;
-  const netIncome = annualIncome - (healthInsurance + pension + incomeTax  + residentTax);
+  const netIncome = annualIncome - (healthInsurance + pension + incomeTax + residentTax);
 
-  // フリーランスの場合
   const freelanceHealthInsurance = annualIncome * 0.10;
-  const freelancePension = 16980 * 12; 
+  const freelancePension = 16980 * 12;
   const taxableIncome = Math.max(annualIncome - freelancePension, 0);
   let incomeTaxRate = 0.05;
   if (taxableIncome > 1950000) {
@@ -43,29 +49,26 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-none space-y-4 mt-6">
       <h2 className="text-2xl font-bold text-center">手取り計算ツール</h2><br />
 
-      {/* 給与入力 */}
       <div className="mt-4">
         <label className="block font-medium">給与（{isMonthly ? "月収" : "年収"}）</label>
         <input
           type="number"
           value={salary}
-          onChange={(e) => setSalary(Number(e.target.value))}
+          onChange={handleSalaryChange}
           className="border p-2 w-full"
         />
       </div>
 
-      {/* ボーナス入力 */}
       <div className="mt-4">
         <label className="block font-medium">ボーナス（年間合計）</label>
         <input
           type="number"
           value={bonus}
-          onChange={(e) => setBonus(Number(e.target.value))}
+          onChange={handleBonusChange}
           className="border p-2 w-full"
         />
       </div>
 
-      {/* 月収入力切り替え */}
       <div className="flex items-center mt-4">
         <input
           type="checkbox"
@@ -76,18 +79,11 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
         <label>月収入力にする</label>
       </div>
 
-      {/* 会社員／フリーランスの切り替え */}
       <div className="flex items-center mt-4">
-        <input 
-          type="checkbox" 
-          checked={isFreelancer} 
-          onChange={() => setIsFreelancer(!isFreelancer)} 
-          className="mr-2" 
-        />
+        <input type="checkbox" checked={isFreelancer} onChange={() => setIsFreelancer(!isFreelancer)} className="mr-2" />
         <label>個人事業主・フリーランスとして計算（課税所得を入力）</label>
       </div>
 
-      {/* 計算結果 */}
       <div className="mt-4 p-4 bg-gray-100 rounded">
         <p>年収: <b>{annualIncome.toLocaleString()} 円</b></p>
         <p>手取り額（月々）: <b>{Math.floor(netIncome / 12).toLocaleString()} 円</b></p>
@@ -101,8 +97,7 @@ export default function IncomeCalculator({ setAnnualIncome }: IncomeCalculatorPr
           <p>引かれる税金・保険料（年間合計）: <b>{(annualIncome - freelanceNetIncome).toLocaleString()} 円</b></p>
         </div>
       )}
-
-      {/* 注釈 */}
+      
       <p className="text-sm text-gray-500 mt-6">
         <strong>※ 注意事項 ※</strong><br />
         このシミュレーションは個人開発のため、実際の計算と異なる場合があります。<br />
