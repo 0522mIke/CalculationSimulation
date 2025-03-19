@@ -1,13 +1,16 @@
 import React from 'react';
 
-const PensionCalculator = () => {
-  // 基本設定
-  const employeeAnnualIncome = 3600000;
+type PensionCalculatorProps = {
+  annualIncome: number;
+};
+
+export default function PensionCalculator({ annualIncome }: PensionCalculatorProps) {
+
   const employeePensionRate = 0.183 / 2;
   const freelanceMonthlyPension = 16980;
 
   // 1. 企業40年分の年金支払い総額
-  const employeePensionPerYear = Math.floor(employeeAnnualIncome * employeePensionRate);
+  const employeePensionPerYear = Math.floor(annualIncome * employeePensionRate);
   const totalEmployeePensionFor40Years = Math.floor(employeePensionPerYear * 40);
 
   // 2. 企業20年 + フリーランス20年分の年金支払い総額
@@ -18,11 +21,7 @@ const PensionCalculator = () => {
   // 3. フリーランス40年分の年金支払い総額
   const totalFreelancePensionFor40Years = Math.floor(freelanceMonthlyPension * 12 * 40);
 
-
-  // 会社員の年金受給額（例：年収360万円の場合）
-  // const estimatedEmployeeMonthlyPension = getEmployeeMonthlyPension(employeeAnnualIncome);
-  
-  // フリーランスの年金受給額（一定金額）
+  // フリーランスの年金受給額（固定値）
   const estimatedFreelanceMonthlyPension = 68000;
 
   return (
@@ -32,7 +31,7 @@ const PensionCalculator = () => {
       <h3>年金支払い総額（概算）</h3>
 
       {/* 1. 企業40年勤務 */}
-      <p>会社員40年【厚生年金】(年収360万円として)：　 ¥{totalEmployeePensionFor40Years.toLocaleString()}</p>
+      <p>会社員40年【厚生年金】(年収{annualIncome.toLocaleString()}円として)：　 ¥{totalEmployeePensionFor40Years.toLocaleString()}</p>
 
       {/* 2. 企業20年 + フリーランス20年 */}
       <p>会社員20年 + フリーランス20年：　¥{totalPensionFor20YearsEmployeeAndFreelance.toLocaleString()}</p>
@@ -42,7 +41,7 @@ const PensionCalculator = () => {
       <br></br>
               
       <br></br>
-       <h3>年収別会社員の年金受給額（月平均）</h3>
+      <h3>年収別会社員の年金受給額（月平均）</h3>
       <ul>
         <li>年収350万円の場合: ¥130,000</li>
         <li>年収450万円の場合: ¥147,000</li>
@@ -59,11 +58,6 @@ const PensionCalculator = () => {
             フリーランスは約1224万円（月々約6.8万円）と、受給額は会社員の約半分となります。<br />
             長期的に見ると、会社員の方が安定した老後を送ることができると感じました。
           </p>
-
     </div>
-
   );
-};
-
-
-export default PensionCalculator;
+}
