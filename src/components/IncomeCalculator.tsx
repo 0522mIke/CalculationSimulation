@@ -30,8 +30,8 @@ const employmentInsurance = annualIncome * 0.006;
 const residentTax = annualIncome * 0.10;
 
 // 所得税の計算（会社員）
-let taxableIncome = annualIncome - (healthInsurance + pension + employmentInsurance);
-let incomeTax = 0;
+const taxableIncome = annualIncome - (healthInsurance + pension + employmentInsurance);
+const incomeTax = 0;
 
 if (taxableIncome <= 1950000) {
   incomeTax = taxableIncome * 0.05;  // 195万円以下：5%
